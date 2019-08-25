@@ -1,7 +1,9 @@
 import React from 'react';
 import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
-import { Input, Button, Container, Header } from 'semantic-ui-react';
+import gql from 'graphql-tag';
+import { Mutation } from 'react-apollo';
+import { Message, Input, Button, Container, Header } from 'semantic-ui-react';
 
 export default observer(
   class Login extends React.Component {
@@ -10,7 +12,9 @@ export default observer(
 
       extendObservable(this, {
         email: '',
-        password: ''
+        password: '',
+        emailError: '',
+        passwordError: ''
       });
     }
     onChange = e => {
@@ -26,8 +30,39 @@ export default observer(
         return false;
       }
     };
+    postFormLogin = data => {
+      const response = data.login;
+      console.log(data.login);
+      this.passwordError = '';
+      this.emailError = '';
+      if (response.ok === true) {
+        this.passwordError = '';
+        this.emailError = '';
+        this.email = '';
+        this.password = '';
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('refreshToken', response.refreshToken);
+        return this.props.history.push('/');
+      } else {
+        const err = {};
+        response.errors.forEach(({ path, message }) => {
+          err[`${path}Error`] = message;
+          //err['passwordError]
+        });
+        this.setState(err, () => {
+          console.log(this.state);
+        });
+      }
+    };
     render() {
-      const { email, password } = this;
+      const { email, password, emailError, passwordError } = this;
+      const errorList = [];
+      if (emailError) {
+        errorList.push(emailError);
+      }
+      if (passwordError) {
+        errorList.push(passwordError);
+      }
       return (
         <Container text>
           <Header as="h2">Login</Header>
@@ -46,16 +81,50 @@ export default observer(
             onChange={this.onChange}
             fluid
           />
-          <Button disabled={this.validateData() ? false : true}>Login</Button>
+          <Mutation
+            mutation={LOGIN_MUTATION}
+            variables={{ email, password }}
+            onCompleted={data => this.postFormLogin(data)}
+          >
+            {postMutation => (
+              <Button
+                disabled={this.validateData() ? false : true}
+                onClick={postMutation}
+              >
+                Login
+              </Button>
+            )}
+          </Mutation>
+          {emailError || passwordError ? (
+            <Message
+              error
+              header="There was some errors with your submission"
+              list={errorList}
+            />
+          ) : null}
         </Container>
       );
     }
   }
 );
+
+const LOGIN_MUTATION = gql`
+  mutation($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      ok
+      refreshToken
+      token
+      errors {
+        path
+        message
+      }
+    }
+  }
+`;
 /* <Mutation
-          mutation={REGISTER_MUTATION}
-          variables={{ username, email, password }}
-          onCompleted={data => this.postFormRegister(data)}
+          mutation={LOGIN_MUTATION}
+          variables={{ email, password }}
+          onCompleted={data => this.postFormLogin(data)}
         >
           {postMutation => (
             <Button

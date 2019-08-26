@@ -3,7 +3,14 @@ import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
-import { Message, Input, Button, Container, Header } from 'semantic-ui-react';
+import {
+  Message,
+  Form,
+  Input,
+  Button,
+  Container,
+  Header
+} from 'semantic-ui-react';
 
 export default observer(
   class Login extends React.Component {
@@ -13,8 +20,7 @@ export default observer(
       extendObservable(this, {
         email: '',
         password: '',
-        emailError: '',
-        passwordError: ''
+        errors: {}
       });
     }
     onChange = e => {
@@ -32,14 +38,12 @@ export default observer(
     };
     postFormLogin = data => {
       const response = data.login;
-      console.log(data.login);
-      this.passwordError = '';
-      this.emailError = '';
+      let { email, password } = this;
+      console.log(data);
       if (response.ok === true) {
-        this.passwordError = '';
-        this.emailError = '';
-        this.email = '';
-        this.password = '';
+        this.errors = {};
+        email = '';
+        password = '';
         localStorage.setItem('token', response.token);
         localStorage.setItem('refreshToken', response.refreshToken);
         return this.props.history.push('/');
@@ -49,13 +53,15 @@ export default observer(
           err[`${path}Error`] = message;
           //err['passwordError]
         });
-        this.setState(err, () => {
-          console.log(this.state);
-        });
+        this.errors = err;
       }
     };
     render() {
-      const { email, password, emailError, passwordError } = this;
+      const {
+        email,
+        password,
+        errors: { emailError, passwordError }
+      } = this;
       const errorList = [];
       if (emailError) {
         errorList.push(emailError);
@@ -66,36 +72,44 @@ export default observer(
       return (
         <Container text>
           <Header as="h2">Login</Header>
-          <Input
-            name="email"
-            value={email}
-            placeholder="Email"
-            onChange={this.onChange}
-            fluid
-          />
-          <Input
-            name="password"
-            value={password}
-            type="password"
-            placeholder="Password"
-            onChange={this.onChange}
-            fluid
-          />
-          <Mutation
-            mutation={LOGIN_MUTATION}
-            variables={{ email, password }}
-            onCompleted={data => this.postFormLogin(data)}
-          >
-            {postMutation => (
-              <Button
-                disabled={this.validateData() ? false : true}
-                onClick={postMutation}
+          <Form>
+            <Form.Field error={!!emailError}>
+              <Input
+                name="email"
+                value={email}
+                placeholder="Email"
+                onChange={this.onChange}
+                fluid
+              />
+            </Form.Field>
+            <Form.Field error={!!passwordError}>
+              <Input
+                name="password"
+                value={password}
+                type="password"
+                placeholder="Password"
+                onChange={this.onChange}
+                fluid
+              />
+            </Form.Field>
+            <Form.Field>
+              <Mutation
+                mutation={LOGIN_MUTATION}
+                variables={{ email, password }}
+                onCompleted={data => this.postFormLogin(data)}
               >
-                Login
-              </Button>
-            )}
-          </Mutation>
-          {emailError || passwordError ? (
+                {postMutation => (
+                  <Button
+                    disabled={this.validateData() ? false : true}
+                    onClick={postMutation}
+                  >
+                    Login
+                  </Button>
+                )}
+              </Mutation>
+            </Form.Field>
+          </Form>
+          {errorList.length ? (
             <Message
               error
               header="There was some errors with your submission"

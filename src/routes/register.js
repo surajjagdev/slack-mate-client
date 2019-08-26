@@ -1,5 +1,12 @@
 import React from 'react';
-import { Message, Input, Button, Container, Header } from 'semantic-ui-react';
+import {
+  Message,
+  Input,
+  Form,
+  Button,
+  Container,
+  Header
+} from 'semantic-ui-react';
 import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 class Register extends React.Component {
@@ -80,46 +87,53 @@ class Register extends React.Component {
     return (
       <Container text>
         <Header as="h2">Register</Header>
-        <Input
-          name="username"
-          error={!!usernameError}
-          value={username}
-          placeholder="Username"
-          onChange={this.onChange}
-          fluid
-        />
-        <Input
-          name="email"
-          error={!!emailError}
-          value={email}
-          placeholder="Email"
-          onChange={this.onChange}
-          fluid
-        />
-        <Input
-          name="password"
-          error={!!passwordError}
-          value={password}
-          type="password"
-          placeholder="Password"
-          onChange={this.onChange}
-          fluid
-        />
-        <Mutation
-          mutation={REGISTER_MUTATION}
-          variables={{ username, email, password }}
-          onCompleted={data => this.postFormRegister(data)}
-        >
-          {postMutation => (
-            <Button
-              disabled={this.validateData() ? false : true}
-              onClick={postMutation}
+        <Form>
+          <Form.Field error={!!usernameError}>
+            <Input
+              name="username"
+              value={username}
+              placeholder="Username"
+              onChange={this.onChange}
+              fluid
+            />
+          </Form.Field>
+          <Form.Field error={!!emailError}>
+            <Input
+              name="email"
+              value={email}
+              placeholder="Email"
+              onChange={this.onChange}
+              fluid
+            />
+          </Form.Field>
+          <Form.Field error={!!passwordError}>
+            <Input
+              name="password"
+              value={password}
+              type="password"
+              placeholder="Password"
+              onChange={this.onChange}
+              fluid
+            />
+          </Form.Field>
+          <Form.Field>
+            <Mutation
+              mutation={REGISTER_MUTATION}
+              variables={{ username, email, password }}
+              onCompleted={data => this.postFormRegister(data)}
             >
-              Register
-            </Button>
-          )}
-        </Mutation>
-        {usernameError || emailError || passwordError ? (
+              {postMutation => (
+                <Button
+                  disabled={this.validateData() ? false : true}
+                  onClick={postMutation}
+                >
+                  Register
+                </Button>
+              )}
+            </Mutation>
+          </Form.Field>
+        </Form>
+        {errorList.length ? (
           <Message
             error
             header="There was some errors with your submission"

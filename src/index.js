@@ -8,18 +8,20 @@ import {
   InMemoryCache,
   HttpLink
 } from 'apollo-boost';
+import { setContext } from 'apollo-link-context';
+import { onError } from 'apollo-link-error';
 import 'semantic-ui-css/semantic.min.css';
 import * as serviceWorker from './serviceWorker';
+import { from } from 'zen-observable';
 const host = 'http://localhost:3001/graphql';
 const httpLink = new HttpLink({
   uri: host
 });
-const authLink = new ApolloLink((operation, forward) => {
+/*const authLink = new ApolloLink((operation, forward) => {
   // Retrieve the authorization token from local storage.
   if (localStorage.getItem('token') !== null) {
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
-    console.log(refreshToken);
     // Use the setContext method to set the HTTP headers.
     operation.setContext({
       headers: {
@@ -31,9 +33,45 @@ const authLink = new ApolloLink((operation, forward) => {
   }
   // Call the next link in the middleware chain.
   return forward(operation);
+});*/
+const authLink = setContext(() => ({
+  headers: {
+    token: localStorage.getItem('token') || null,
+    refreshtoken: localStorage.getItem('refreshToken') || null
+  }
+}));
+const afterWare = new ApolloLink((operation, forward) => {
+  return forward(operation).map(response => {
+    const context = operation.getContext();
+    const {
+      response: { headers }
+    } = context;
+
+    if (headers) {
+      const token = headers.get('token');
+      const refreshToken = headers.get('refreshtoken');
+
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+
+      if (refreshToken) {
+        localStorage.setItem('refreshToken', refreshToken);
+      }
+    }
+    console.log(response);
+    return response;
+  });
 });
+const logoutLink = onError(({ networkError }) => {
+  if (networkError.statusCode === 401) {
+    console.log('netwrok erro');
+  }
+});
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: ApolloLink.from([authLink, afterWare, logoutLink, httpLink]),
+  //link: authLink.concat(httpLink),
   cache: new InMemoryCache()
 });
 ReactDOM.render(

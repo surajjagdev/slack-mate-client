@@ -12,12 +12,16 @@ const getAllUsers = gql`
 `;
 const Home = () => (
   <Query query={getAllUsers}>
-    {({ loading, error, data: { allUsers = [] } }) => {
+    {({ loading, error, data }) => {
       if (loading) return 'Loading...';
       if (error) return `Error! ${error.message}`;
-      return allUsers.map(u => {
-        return <h1 key={u.id}>{u.email}</h1>;
-      });
+      if (typeof data !== 'undefined') {
+        return data.allUsers.map(user => {
+          return <h1 key={user.id}>{user.email}</h1>;
+        });
+      } else {
+        return <h1>undefined</h1>;
+      }
     }}
   </Query>
 );

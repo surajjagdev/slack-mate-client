@@ -17,23 +17,6 @@ const host = 'http://localhost:3001/graphql';
 const httpLink = new HttpLink({
   uri: host
 });
-/*const authLink = new ApolloLink((operation, forward) => {
-  // Retrieve the authorization token from local storage.
-  if (localStorage.getItem('token') !== null) {
-    const token = localStorage.getItem('token');
-    const refreshToken = localStorage.getItem('refreshToken');
-    // Use the setContext method to set the HTTP headers.
-    operation.setContext({
-      headers: {
-        token: token ? `${token}` : '',
-        refreshtoken: refreshToken ? `${refreshToken}` : ''
-        // authorization: token ? `${token}` : ``
-      }
-    });
-  }
-  // Call the next link in the middleware chain.
-  return forward(operation);
-});*/
 const authLink = setContext(() => ({
   headers: {
     token: localStorage.getItem('token') || null,
@@ -63,14 +46,14 @@ const afterWare = new ApolloLink((operation, forward) => {
     return response;
   });
 });
-const logoutLink = onError(({ networkError }) => {
+/*const logoutLink = onError(({ networkError }) => {
   if (networkError.statusCode === 401) {
     console.log('netwrok erro');
   }
-});
+});*/
 
 const client = new ApolloClient({
-  link: ApolloLink.from([authLink, afterWare, logoutLink, httpLink]),
+  link: ApolloLink.from([authLink, afterWare, httpLink]),
   //link: authLink.concat(httpLink),
   cache: new InMemoryCache()
 });

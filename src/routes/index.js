@@ -4,6 +4,7 @@ import Register from './register.js';
 import Login from './login.js';
 import CreateTeam from './createTeam.js';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import ProtectedRoute from '../auth/privateroutes.js';
 const Routes = () => {
   return (
     <Router>
@@ -11,7 +12,7 @@ const Routes = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/createteam" component={CreateTeam} />
+        <ProtectedRoute exact path="/createteam" component={CreateTeam} />
       </Switch>
     </Router>
   );

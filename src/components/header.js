@@ -5,9 +5,6 @@ const HeaderWrapper = styled.div`
   grid-row: 1;
   grid-column: 3;
 `;
-const header = ({ id, name }) => {
-  return <li key={`header-${id}`}>{name}</li>;
-};
 export default ({ channelName }) => {
   return (
     <HeaderWrapper>

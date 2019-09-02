@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { userInfo } from 'os';
 const ChannelWrapper = styled.div`
   grid-column: 2;
   grid-row: 1/4;
@@ -49,6 +50,7 @@ const user = ({ id, name }) => (
   </SideBarListItem>
 );
 export default ({ teamName, userName, channels, users }) => {
+  console.log(teamName, userName, channels, users);
   return (
     <ChannelWrapper>
       <PushLeft>

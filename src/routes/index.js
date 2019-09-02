@@ -13,7 +13,11 @@ const Routes = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/register" component={Register} />
         <Route exact path="/login" component={Login} />
-        <Route exact path="/viewteam" component={ViewTeam} />
+        <ProtectedRoute
+          exact
+          path="/viewteam/:teamId?:channelId?"
+          component={ViewTeam}
+        />
         <ProtectedRoute exact path="/createteam" component={CreateTeam} />
       </Switch>
     </Router>

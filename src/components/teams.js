@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 const TeamWrapper = styled.div`
   background-color: #362234;
   grid-row: 1/4;
@@ -30,7 +31,11 @@ const TeamListWrapper = styled.div`
   }
 `;
 const team = ({ id, name }) => {
-  return <TeamListWrapper key={`team-${id}`}>{name}</TeamListWrapper>;
+  return (
+    <Link to={`/viewteam/${id}`} key={`team-${id}`}>
+      <TeamListWrapper>{name}</TeamListWrapper>
+    </Link>
+  );
 };
 export default ({ teams }) => {
   console.log(teams);

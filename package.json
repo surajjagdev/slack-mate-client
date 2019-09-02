@@ -9,6 +9,7 @@
     "apollo-client": "^2.6.4",
     "apollo-link-context": "^1.0.18",
     "apollo-link-error": "^1.1.11",
+    "formik": "^1.5.8",
     "gql": "^1.1.2",
     "graphql": "^14.5.3",
     "jwt-decode": "^2.2.0",

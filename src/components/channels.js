@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { userInfo } from 'os';
+import { Icon } from 'semantic-ui-react';
 const ChannelWrapper = styled.div`
   grid-column: 2;
   grid-row: 1/4;
@@ -49,7 +49,7 @@ const user = ({ id, name }) => (
     <OnlineBubble /> {name}
   </SideBarListItem>
 );
-export default ({ teamName, userName, channels, users }) => {
+export default ({ teamName, userName, channels, users, addChannel }) => {
   console.log(teamName, userName, channels, users);
   return (
     <ChannelWrapper>
@@ -59,7 +59,9 @@ export default ({ teamName, userName, channels, users }) => {
       </PushLeft>
       <div>
         <SideBarList>
-          <SideBarListHeader>Channels</SideBarListHeader>
+          <SideBarListHeader>
+            Channels <Icon name="add circle" onClick={addChannel} />
+          </SideBarListHeader>
           {channels.map(channel)}
         </SideBarList>
       </div>

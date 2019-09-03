@@ -60,9 +60,9 @@ export default ({
   channels,
   users,
   addChannel,
-  teamId
+  teamId,
+  handleInviteMate
 }) => {
-  console.log(teamName, userName, channels, users);
   return (
     <ChannelWrapper>
       <PushLeft>
@@ -82,6 +82,11 @@ export default ({
           <SideBarListHeader>Direct Messages</SideBarListHeader>
           {users.map(user)}
         </SideBarList>
+      </div>
+      <div>
+        <a href="#invite-Mate" onClick={handleInviteMate}>
+          + Invite Mates
+        </a>
       </div>
     </ChannelWrapper>
   );

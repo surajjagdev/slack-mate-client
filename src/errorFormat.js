@@ -19,6 +19,5 @@ export default errors =>
     } else {
       acculator[currentValue.path] = [currentValue.message];
     }
-
     return acculator;
   }, {});

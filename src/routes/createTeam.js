@@ -43,7 +43,8 @@ class CreateTeam extends React.Component {
         variables: { name }
       });
     } catch (err) {
-      this.props.history.push('/login');
+      //this.props.history.push('/login');
+      console.log('err: ', err);
       return;
     }
 

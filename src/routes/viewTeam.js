@@ -22,17 +22,17 @@ const ViewTeam = ({
   if (!allTeams) {
     return <Redirect to="/createteam" />;
   }
-  console.log('teamId: ', teamId);
   const teamIdInteger = parseInt(teamId, 10);
   const teamIdx = teamIdInteger
     ? findIndex(allTeams, ['id', teamIdInteger])
     : 0;
-  const team = allTeams[teamIdx];
+  const team = teamIdx === -1 ? allTeams[0] : allTeams[teamIdx];
   const channelIdInteger = parseInt(channelId, 10);
   const channelIdx = channelIdInteger
     ? findIndex(team.channels, ['id', channelIdInteger])
     : 0;
-  const channel = team.channels[channelIdx];
+  const channel =
+    channelIdx === -1 ? team.channels[0] : team.channels[channelIdx];
   return (
     <AppLayout>
       <SideBar

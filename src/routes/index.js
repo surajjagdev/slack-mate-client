@@ -15,7 +15,7 @@ const Routes = () => {
         <Route exact path="/login" component={Login} />
         <ProtectedRoute
           exact
-          path="/viewteam/:teamId?:channelId?"
+          path="/viewteam/:teamId?/:channelId?"
           component={ViewTeam}
         />
         <ProtectedRoute exact path="/createteam" component={CreateTeam} />

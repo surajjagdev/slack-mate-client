@@ -10,7 +10,7 @@ import { graphql } from 'react-apollo';
 import { allTeamsQuery } from '../graphql/team.js';
 
 const ViewTeam = ({
-  data: { loading, allTeams },
+  data: { loading, allTeams, teamInvitedTo },
   match: {
     params: { teamId, channelId }
   }
@@ -19,14 +19,16 @@ const ViewTeam = ({
     return null;
   }
   //if no teams exist redirect to create team
-  if (!allTeams) {
+  if (!allTeams.length) {
     return <Redirect to="/createteam" />;
   }
+  //merge all teams owned and teams invited to.
+  const teamsList = [...allTeams, ...teamInvitedTo];
   const teamIdInteger = parseInt(teamId, 10);
   const teamIdx = teamIdInteger
-    ? findIndex(allTeams, ['id', teamIdInteger])
+    ? findIndex(teamsList, ['id', teamIdInteger])
     : 0;
-  const team = teamIdx === -1 ? allTeams[0] : allTeams[teamIdx];
+  const team = teamIdx === -1 ? teamsList[0] : teamsList[teamIdx];
   const channelIdInteger = parseInt(channelId, 10);
   const channelIdx = channelIdInteger
     ? findIndex(team.channels, ['id', channelIdInteger])
@@ -36,7 +38,7 @@ const ViewTeam = ({
   return (
     <AppLayout>
       <SideBar
-        teams={allTeams.map(t => ({
+        teams={teamsList.map(t => ({
           id: t.id,
           name: t.name.charAt(0).toUpperCase()
         }))}

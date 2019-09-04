@@ -19,7 +19,7 @@ const ViewTeam = ({
     return null;
   }
   //if no teams exist redirect to create team
-  if (!allTeams.length > 0) {
+  if (!allTeams) {
     return <Redirect to="/createteam" />;
   }
   console.log('teamId: ', teamId);

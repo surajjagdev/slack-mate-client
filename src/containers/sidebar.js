@@ -10,14 +10,18 @@ export default class Sidebar extends React.Component {
     openAddChannelModal: false,
     openAddInviteModal: false
   };
-  handleAddChannel = () => {
-    console.log('handleaddchannel');
+  handleAddChannel = e => {
+    if (e) {
+      e.preventDefault();
+    }
     this.setState(prevState => ({
       openAddChannelModal: !prevState.openAddChannelModal
     }));
   };
-  handleInviteMate = () => {
-    console.log('handleadd mate');
+  handleInviteMate = e => {
+    if (e) {
+      e.preventDefault();
+    }
     this.setState(prevState => ({
       openAddInviteModal: !prevState.openAddInviteModal
     }));

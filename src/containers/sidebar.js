@@ -33,7 +33,6 @@ export default class Sidebar extends React.Component {
       const token = localStorage.getItem('token');
       const { user } = decode(token);
       username = user.username;
-      console.log(username);
     } catch (err) {
       console.log('err: ', err);
     }

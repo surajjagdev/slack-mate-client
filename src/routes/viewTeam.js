@@ -3,6 +3,7 @@ import Header from '../components/header.js';
 import Messages from '../components/messages.js';
 import AppLayout from '../components/applayout.js';
 import SideBar from '../containers/sidebar.js';
+import MessengerContainer from '../containers/messaagerContainer.js';
 import { Redirect } from 'react-router-dom';
 import SendMessage from '../components/input.js';
 import { findIndex } from 'lodash';
@@ -45,15 +46,10 @@ const ViewTeam = ({
         team={team}
       />
       {channel && <Header channelName={channel.name} />}
+      {channel && <MessengerContainer channelId={channel.id} />}
       {channel && (
-        <Messages channelId={channel.id}>
-          <ul className="message-list">
-            <li />
-            <li />
-          </ul>
-        </Messages>
+        <SendMessage channelName={channel.name} channelId={channel.id} />
       )}
-      {channel && <SendMessage channelName={channel.name} />}
     </AppLayout>
   );
 };

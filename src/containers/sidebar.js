@@ -29,10 +29,15 @@ export default class Sidebar extends React.Component {
   render() {
     const { teams, team } = this.props;
     let username = '';
+    let isOwner = false;
     try {
       const token = localStorage.getItem('token');
       const { user } = decode(token);
       username = user.username;
+      if (team.owner === user.id) {
+        isOwner = true;
+      }
+      console.log(isOwner);
     } catch (err) {
       console.log('err: ', err);
     }
@@ -43,6 +48,7 @@ export default class Sidebar extends React.Component {
         key="channels-sidebar"
         teamName={team.name}
         userName={username}
+        isOwner={isOwner}
         teamId={team.id}
         channels={team.channels}
         users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}

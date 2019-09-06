@@ -19,6 +19,16 @@ class MessageContainerClass extends React.Component {
   componentDidMount() {
     this.subscribe(this.props.channelId);
   }
+  componentDidUpdate(prevProps) {
+    if (this.props.channelId !== prevProps.channelId) {
+      this.subscribe(this.props.channelId);
+    } else {
+      console.log('nothing changed');
+    }
+  }
+  unsubscribe = channelId => {
+    return this.subscribe(channelId);
+  };
   subscribe = channelId => {
     this.props.subscribeToMore({
       document: newChannelMessageSubscription,
@@ -29,14 +39,29 @@ class MessageContainerClass extends React.Component {
         if (!subscriptionData) {
           return prev;
         }
+        const idAlreadyExists =
+          prev.messages.filter(item => {
+            return item.id === subscriptionData.data.newChannelMessage.id;
+          }).length > 0;
+        if (!idAlreadyExists) {
+          return {
+            ...prev,
+            messages: [
+              ...prev.messages,
+              subscriptionData.data.newChannelMessage
+            ]
+          };
+        }
         //return concat of messages available and new messages
-        return {
-          ...prev,
-          messages: [...prev.messages, subscriptionData.data.newChannelMessage]
-        };
       }
     });
   };
+
+  /*componentDidUpdate(prevProps) {
+    if (prevProps.channelId !== this.props.channelId) {
+      this.subscribe(this.props.channelId);
+    }
+  }*/
   render() {
     return (
       <Messages>

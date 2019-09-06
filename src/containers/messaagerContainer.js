@@ -17,7 +17,11 @@ const messagesQuery = gql`
 const MessageContainer = props => {
   console.log(props);
   return (
-    <Query query={messagesQuery} variables={{ channelId: props.channelId }}>
+    <Query
+      query={messagesQuery}
+      variables={{ channelId: props.channelId }}
+      fetchPolicy="network-only"
+    >
       {({ data, loading, subscribeToMore }) => {
         if (!data) {
           return null;

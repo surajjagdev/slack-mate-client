@@ -1,6 +1,5 @@
 import React from 'react';
 import Header from '../components/header.js';
-import Messages from '../components/messages.js';
 import AppLayout from '../components/applayout.js';
 import SideBar from '../containers/sidebar.js';
 import MessengerContainer from '../containers/messaagerContainer.js';

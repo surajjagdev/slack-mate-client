@@ -10,7 +10,7 @@ import { setContext } from 'apollo-link-context';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 const host = 'http://localhost:3001/graphql';
-const wsHost = 'ws://localhost:3001/subscriptions';
+const wsHost = 'ws://localhost:3001/graphql';
 const httpLink = new HttpLink({
   uri: host
 });

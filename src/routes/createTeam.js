@@ -47,14 +47,10 @@ class CreateTeam extends React.Component {
       console.log('err: ', err);
       return;
     }
-
-    console.log(response);
-
     const { ok, errors, team } = response.data.createTeam;
 
     if (ok) {
-      console.log('\n opk\n');
-      this.props.history.push(`/viewteam/${team.id}`);
+      this.props.history.push(`/viewteam/${team.id}/${team.channels[0].id}`);
     } else {
       const err = {};
       errors.forEach(({ path, message }) => {
@@ -108,6 +104,9 @@ const CREATE_TEAM = gql`
       ok
       team {
         id
+        channels {
+          id
+        }
       }
       errors {
         path

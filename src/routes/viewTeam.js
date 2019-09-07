@@ -7,10 +7,10 @@ import { Redirect } from 'react-router-dom';
 import SendMessage from '../components/input.js';
 import { findIndex } from 'lodash';
 import { graphql } from 'react-apollo';
-import { allTeamsQuery } from '../graphql/team.js';
+import { getUserQuery } from '../graphql/team.js';
 
 const ViewTeam = ({
-  data: { loading, allTeams, teamInvitedTo },
+  data: { loading, getUser, ...otherProps },
   match: {
     params: { teamId, channelId }
   }
@@ -18,16 +18,18 @@ const ViewTeam = ({
   if (loading) {
     return null;
   }
-  //if no teams exist redirect to create team
-  if (!allTeams.length) {
+  const teamsList = getUser.teams;
+  const username = getUser.username;
+  if (!teamsList.length) {
     return <Redirect to="/createteam" />;
   }
+  //if no teams exist redirect to create team
   //merge all teams owned and teams invited to.
-  const teamsList = [...allTeams, ...teamInvitedTo];
-  const teamIdInteger = parseInt(teamId, 10);
+  const teamIdInteger = parseInt(teamId, 10); //--working
   const teamIdx = teamIdInteger
     ? findIndex(teamsList, ['id', teamIdInteger])
     : 0;
+  console.log('teamIdx:', teamIdx);
   const team = teamIdx === -1 ? teamsList[0] : teamsList[teamIdx];
   const channelIdInteger = parseInt(channelId, 10);
   const channelIdx = channelIdInteger
@@ -43,6 +45,7 @@ const ViewTeam = ({
           name: t.name.charAt(0).toUpperCase()
         }))}
         team={team}
+        userName={username}
       />
       {channel && <Header channelName={channel.name} />}
       {channel && <MessengerContainer channelId={channel.id} />}
@@ -53,4 +56,6 @@ const ViewTeam = ({
   );
 };
 
-export default graphql(allTeamsQuery)(ViewTeam);
+export default graphql(getUserQuery, {
+  options: { fetchPolicy: 'network-only' }
+})(ViewTeam);

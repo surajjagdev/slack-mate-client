@@ -54,7 +54,11 @@ const httpLinkWithMiddleware = afterWareLink.concat(
 const wsLink = new WebSocketLink({
   uri: wsHost,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      token: localStorage.getItem('token'),
+      refreshToken: localStorage.getItem('refreshToken')
+    }
   }
 });
 //split the connections between ws and (authmiddleware, middleware and httplink)

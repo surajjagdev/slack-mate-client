@@ -5,7 +5,7 @@ import gql from 'graphql-tag';
 import { findIndex } from 'lodash';
 import { graphql } from 'react-apollo';
 import { flowRight } from 'lodash';
-import { allTeamsQuery } from '../graphql/team.js';
+import { getUserQuery } from '../graphql/team.js';
 
 const AddChannelModal = ({
   open,
@@ -90,10 +90,10 @@ export default flowRight(
           if (!ok) {
             return;
           }
-          const data = store.readQuery({ query: allTeamsQuery });
-          const teamIdx = findIndex(data.allTeams, ['id', teamId]);
-          data.allTeams[teamIdx].channels.push(channel);
-          store.writeQuery({ query: allTeamsQuery, data });
+          const data = store.readQuery({ query: getUserQuery });
+          const teamIdx = findIndex(data.getUser.teams, ['id', teamId]);
+          data.getUser.teams[teamIdx].channels.push(channel);
+          store.writeQuery({ query: getUserQuery, data });
         }
       });
       close();

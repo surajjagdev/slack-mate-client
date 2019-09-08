@@ -26,11 +26,12 @@ const afterWareLink = new ApolloLink((operation, forward) => {
     const {
       response: { headers }
     } = context;
-
+    console.log(headers);
     if (headers) {
       const token = headers.get('token');
-      const refreshToken = headers.get('refreshtoken');
+      console.log(token);
 
+      const refreshToken = headers.get('refreshtoken');
       if (token) {
         localStorage.setItem('token', token);
       }

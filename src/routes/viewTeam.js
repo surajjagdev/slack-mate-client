@@ -6,11 +6,13 @@ import MessengerContainer from '../containers/messaagerContainer.js';
 import { Redirect } from 'react-router-dom';
 import SendMessage from '../components/input.js';
 import { findIndex } from 'lodash';
+import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { getUserQuery } from '../graphql/team.js';
-
+import { flowRight } from 'lodash';
 const ViewTeam = ({
-  data: { loading, getUser, ...otherProps },
+  mutate,
+  data: { loading, getUser },
   match: {
     params: { teamId, channelId }
   }
@@ -18,7 +20,14 @@ const ViewTeam = ({
   if (loading) {
     return null;
   }
-  const teamsList = getUser.teams;
+  let teamsList = null;
+  try {
+    if (typeof getUser !== undefined) {
+      teamsList = getUser.teams;
+    }
+  } catch (err) {
+    return <Redirect to="/createteam" />;
+  }
   const username = getUser.username;
   if (!teamsList.length) {
     return <Redirect to="/createteam" />;
@@ -50,12 +59,25 @@ const ViewTeam = ({
       {channel && <Header channelName={channel.name} />}
       {channel && <MessengerContainer channelId={channel.id} />}
       {channel && (
-        <SendMessage channelName={channel.name} channelId={channel.id} />
+        <SendMessage
+          placeholder={channel.name}
+          onSubmit={async text => {
+            await mutate({ variables: { text, channelId: channel.id } });
+          }}
+        />
       )}
     </AppLayout>
   );
 };
+const sendMessageMutation = gql`
+  mutation($channelId: Int!, $text: String!) {
+    createMessage(channelId: $channelId, text: $text)
+  }
+`;
 
-export default graphql(getUserQuery, {
-  options: { fetchPolicy: 'network-only' }
-})(ViewTeam);
+export default flowRight(
+  graphql(getUserQuery, {
+    options: { fetchPolicy: 'network-only' }
+  }),
+  graphql(sendMessageMutation)
+)(ViewTeam);

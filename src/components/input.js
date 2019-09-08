@@ -2,9 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Input } from 'semantic-ui-react';
 import { withFormik } from 'formik';
-import gql from 'graphql-tag';
-import { graphql } from 'react-apollo';
-import { flowRight } from 'lodash';
 
 const InputWrapper = styled.div`
   background-color: #362234;
@@ -13,13 +10,8 @@ const InputWrapper = styled.div`
   margin: 20px;
   color: 'black';
 `;
-const sendMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
-  }
-`;
 const SendMessage = ({
-  channelName,
+  placeholder,
   values,
   handleChange,
   handleBlur,
@@ -38,26 +30,24 @@ const SendMessage = ({
       onBlur={handleBlur}
       onChange={handleChange}
       fluid
-      placeholder={`Message ${channelName}`}
+      placeholder={`Message ${placeholder}`}
     />
   </InputWrapper>
 );
-export default flowRight(
-  graphql(sendMessageMutation),
-  withFormik({
-    mapPropsToValues: () => ({ message: '' }),
-    handleSubmit: async (
-      values,
-      { props: { channelId, mutate }, setSubmitting, resetForm }
-    ) => {
-      //if message doesnt exist dont submit
-      if (!values.message || values.message.trim()) {
-        setSubmitting(false);
-      }
-      await mutate({
-        variables: { channelId, text: values.message }
-      });
-      resetForm(false);
+export default withFormik({
+  mapPropsToValues: () => ({ message: '' }),
+  handleSubmit: async (
+    values,
+    { props: { onSubmit }, setSubmitting, resetForm }
+  ) => {
+    //if message doesnt exist dont submit
+    if (!values.message || values.message.trim()) {
+      setSubmitting(false);
     }
-  })
-)(SendMessage);
+    await onSubmit(values.message);
+    /*await mutate({
+      variables: { channelId, text: values.message }
+    });*/
+    resetForm(false);
+  }
+})(SendMessage);

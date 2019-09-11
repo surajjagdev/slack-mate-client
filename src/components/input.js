@@ -44,10 +44,8 @@ export default withFormik({
     if (!values.message || values.message.trim()) {
       setSubmitting(false);
     }
+    console.log(values);
     await onSubmit(values.message);
-    /*await mutate({
-      variables: { channelId, text: values.message }
-    });*/
     resetForm(false);
   }
 })(SendMessage);

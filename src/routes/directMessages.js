@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/header.js';
 import AppLayout from '../components/applayout.js';
 import SideBar from '../containers/sidebar.js';
-import MessengerContainer from '../containers/messaagerContainer.js';
+import DirectMessageContainer from '../containers/directMessageContainer.js';
 import { Redirect } from 'react-router-dom';
 import SendMessage from '../components/input.js';
 import { findIndex } from 'lodash';
@@ -10,13 +10,14 @@ import { getUserQuery } from '../graphql/team.js';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { flowRight } from 'lodash';
-const sendMessageMutation = gql`
-  mutation($channelId: Int!, $text: String!) {
-    createMessage(channelId: $channelId, text: $text)
+const createDirectMessage = gql`
+  mutation($receiverId: String!, $text: String!, $teamId: Int!) {
+    createDirectMessage(receiverId: $receiverId, text: $text, teamId: $teamId)
   }
 `;
 
 const DirectMessages = ({
+  mutate,
   data: { loading, getUser },
   match: {
     params: { teamId, userId }
@@ -55,9 +56,22 @@ const DirectMessages = ({
         team={team}
         userName={username}
       />
-      {/*<Header channelName={channel.name} />
-      <MessengerContainer channelId={channel.id} />*/}
-      <SendMessage onSubmit={() => {}} placeholder={userId} />
+      <Header channelName={'placeholder user'} />
+      <DirectMessageContainer teamId={parseInt(teamId, 10)} userId={userId} />
+      <SendMessage
+        placeholder={userId}
+        onSubmit={async text => {
+          const intTeamId = parseInt(teamId, 10);
+          await mutate({
+            variables: {
+              text,
+              receiverId: userId,
+              teamId: intTeamId
+            }
+          });
+        }}
+      />
+      />
     </AppLayout>
   );
 };
@@ -66,5 +80,5 @@ export default flowRight(
   graphql(getUserQuery, {
     options: { fetchPolicy: 'network-only' }
   }),
-  graphql(sendMessageMutation)
+  graphql(createDirectMessage)
 )(DirectMessages);

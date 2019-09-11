@@ -22,7 +22,7 @@ const Routes = () => {
         <ProtectedRoute exact path="/createteam" component={CreateTeam} />
         <ProtectedRoute
           exact
-          path="/viewteam/user/:teamId?/:userId?"
+          path="/viewteam/user/:teamId/:userId?"
           component={DirectMessages}
         />
       </Switch>

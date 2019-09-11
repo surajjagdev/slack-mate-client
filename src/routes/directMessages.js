@@ -15,10 +15,34 @@ const createDirectMessage = gql`
     createDirectMessage(receiverId: $receiverId, text: $text, teamId: $teamId)
   }
 `;
+const directMessageAndMeQuery = gql`
+  query($userId: String!) {
+    getMessagedUser(userId: $userId) {
+      username
+    }
+    getUser {
+      id
+      username
+      teams {
+        id
+        name
+        admin
+        directMessageMembers {
+          id
+          username
+        }
+        channels {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
 
 const DirectMessages = ({
   mutate,
-  data: { loading, getUser },
+  data: { loading, getUser, getMessagedUser },
   match: {
     params: { teamId, userId }
   }
@@ -56,29 +80,49 @@ const DirectMessages = ({
         team={team}
         userName={username}
       />
-      <Header channelName={'placeholder user'} />
+      <Header channelName={getMessagedUser.username} />
       <DirectMessageContainer teamId={parseInt(teamId, 10)} userId={userId} />
       <SendMessage
         placeholder={userId}
         onSubmit={async text => {
-          const intTeamId = parseInt(teamId, 10);
-          await mutate({
+          const response = await mutate({
             variables: {
               text,
               receiverId: userId,
-              teamId: intTeamId
+              teamId: parseInt(teamId, 10)
+            },
+            optimisticResponse: {
+              createDirectMessage: true
+            },
+            update: store => {
+              const data = store.readQuery({ query: getUserQuery });
+              const teamIdx2 = findIndex(data.getUser.teams, ['id', team.id]);
+              const notAlreadyThere = data.getUser.teams[
+                teamIdx2
+              ].directMessageMembers.every(member => member.id !== userId);
+              if (notAlreadyThere) {
+                data.getUser.teams[teamIdx2].directMessageMembers.push({
+                  __typename: 'User',
+                  id: userId,
+                  username: getMessagedUser.username
+                });
+                store.writeQuery({ query: getUserQuery, data });
+              }
             }
           });
+          console.log(response);
         }}
-      />
       />
     </AppLayout>
   );
 };
 
 export default flowRight(
-  graphql(getUserQuery, {
-    options: { fetchPolicy: 'network-only' }
+  graphql(directMessageAndMeQuery, {
+    options: props => ({
+      variables: { userId: props.match.params.userId },
+      fetchPolicy: 'network-only'
+    })
   }),
   graphql(createDirectMessage)
 )(DirectMessages);

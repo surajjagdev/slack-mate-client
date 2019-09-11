@@ -1,14 +1,23 @@
 import React from 'react';
-import decode from 'jwt-decode';
 import AddChannelModal from '../components/addchannelmodal.js';
 import InviteMateModal from '../components/invitematemodal.js';
+import DirectMessageModal from '../components/directmessagemodal.js';
 import Channels from '../components/channels.js';
 import Teams from '../components/teams.js';
 
 export default class Sidebar extends React.Component {
   state = {
     openAddChannelModal: false,
-    openAddInviteModal: false
+    openAddInviteModal: false,
+    openDirectMessageModal: false
+  };
+  handleAddDirectMessage = e => {
+    if (e) {
+      e.preventDefault();
+    }
+    this.setState(prevState => ({
+      openDirectMessageModal: !prevState.openDirectMessageModal
+    }));
   };
   handleAddChannel = e => {
     if (e) {
@@ -46,9 +55,17 @@ export default class Sidebar extends React.Component {
         isOwner={isOwner}
         teamId={team.id}
         channels={team.channels}
-        users={[{ id: 1, name: 'slackbot' }, { id: 2, name: 'user1' }]}
+        users={team.directMessageMembers}
         addChannel={this.handleAddChannel}
         handleInviteMate={this.handleInviteMate}
+        directMessageClick={this.handleAddDirectMessage}
+      />,
+      <DirectMessageModal
+        key="adddirectmessagemodal-sidebar"
+        teamId={parseInt(team.id, 10)}
+        open={this.state.openDirectMessageModal}
+        teamId={parseInt(team.id, 10)}
+        onClose={this.handleAddDirectMessage}
       />,
       <AddChannelModal
         key="addchannelmodal-sidebar"

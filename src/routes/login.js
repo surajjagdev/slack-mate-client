@@ -2,6 +2,7 @@ import React from 'react';
 import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import gql from 'graphql-tag';
+import { wsLink } from '../apollosubscriptions.js';
 import { Mutation } from 'react-apollo';
 import {
   Message,
@@ -46,7 +47,8 @@ export default observer(
         password = '';
         localStorage.setItem('token', response.token);
         localStorage.setItem('refreshToken', response.refreshToken);
-        return this.props.history.push('/');
+        wsLink.subscriptionClient.tryReconnect();
+        return (window.location.href = '/viewteam');
       } else {
         const err = {};
         response.errors.forEach(({ path, message }) => {

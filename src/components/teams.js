@@ -41,7 +41,12 @@ export default ({ teams }) => {
   console.log(teams);
   return (
     <TeamWrapper>
-      <TeamList>{teams.map(team)}</TeamList>
+      <TeamList>
+        {teams.map(team)}
+        <Link to={`/createteam`} key={'add-new-team'}>
+          <TeamListWrapper>+</TeamListWrapper>
+        </Link>
+      </TeamList>
     </TeamWrapper>
   );
 };

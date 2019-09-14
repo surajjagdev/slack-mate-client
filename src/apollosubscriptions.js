@@ -52,10 +52,11 @@ const httpLinkWithMiddleware = afterWareLink.concat(
   middlewareLink.concat(httpLink)
 );
 //ws
-const wsLink = new WebSocketLink({
+export const wsLink = new WebSocketLink({
   uri: wsHost,
   options: {
     reconnect: true,
+    lazy: true,
     connectionParams: {
       token: localStorage.getItem('token'),
       refreshToken: localStorage.getItem('refreshToken')

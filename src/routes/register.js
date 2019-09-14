@@ -51,7 +51,7 @@ class Register extends React.Component {
           password: ''
         },
         () => {
-          this.props.history.push('/');
+          this.props.history.push('/login');
         }
       );
     } else {

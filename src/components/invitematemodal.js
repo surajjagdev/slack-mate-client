@@ -78,7 +78,17 @@ export default flowRight(
         setSubmitting(false);
       } else {
         setSubmitting(false);
-        setErrors(errorFormat(errors));
+        const errorLength = errors.length;
+        const filteredErrors = errors.filter(
+          e => e.message !== 'user_id must be unique'
+        );
+        if (errorLength !== filteredErrors.length) {
+          filteredErrors.push({
+            path: 'email',
+            message: 'This user is already part of the team.'
+          });
+        }
+        setErrors(errorFormat(filteredErrors));
       }
     }
   })

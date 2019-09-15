@@ -7,6 +7,9 @@ const ChannelWrapper = styled.div`
   grid-row: 1/4;
   background-color: #4e3a4c;
   color: #958993;
+  @media (max-width: 640px) {
+    display: none;
+  }
 `;
 //team header white
 const TeamNameHeader = styled.h1`

@@ -60,6 +60,7 @@ const ViewTeam = ({
       {channel && <MessengerContainer channelId={channel.id} />}
       {channel && (
         <SendMessage
+          channelId={channel.id}
           placeholder={channel.name}
           onSubmit={async text => {
             console.log('text: ', text);

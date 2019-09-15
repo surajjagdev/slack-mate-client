@@ -1,17 +1,15 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloLink,
-  split,
-  HttpLink
-} from 'apollo-boost';
+import { ApolloClient, InMemoryCache, ApolloLink, split } from 'apollo-boost';
+import apolloUploadClient from 'apollo-upload-client';
 //import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getMainDefinition } from 'apollo-utilities';
 const host = 'http://localhost:3001/graphql';
 const wsHost = 'ws://localhost:3001/graphql';
-const httpLink = new HttpLink({
+/*const httpLink = new HttpLink({
+  uri: host
+});*/
+const httpLink = apolloUploadClient.createUploadLink({
   uri: host
 });
 const middlewareLink = setContext(() => ({

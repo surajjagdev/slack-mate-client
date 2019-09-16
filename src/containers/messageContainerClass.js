@@ -3,6 +3,7 @@ import Messages from '../components/messages.js';
 import gql from 'graphql-tag';
 import { Comment } from 'semantic-ui-react';
 import FileUpload from '../components/fileupload.js';
+import RenderText from '../components/rendertext.js';
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
     newChannelMessage(channelId: $channelId) {
@@ -11,11 +12,30 @@ const newChannelMessageSubscription = gql`
       user {
         username
       }
+      url
+      filetype
       createdAt
     }
   }
 `;
-
+const MessageDetect = ({ message: { url, text, filetype } }) => {
+  if (url) {
+    if (filetype.startsWith('image/')) {
+      return <img src={url} alt="" />;
+    } else if (filetype === 'text/plain') {
+      return <RenderText url={url} />;
+    } else if (filetype.startsWith('audio/')) {
+      return (
+        <div>
+          <audio controls>
+            <source src={url} type={filetype} />
+          </audio>
+        </div>
+      );
+    }
+  }
+  return <Comment.Text>{text}</Comment.Text>;
+};
 class MessageContainerClass extends React.Component {
   componentDidMount() {
     this.subscribe(this.props.channelId);
@@ -77,7 +97,7 @@ class MessageContainerClass extends React.Component {
                   <Comment.Metadata>
                     <div>{message.createdAt}</div>
                   </Comment.Metadata>
-                  <Comment.Text>{message.text}</Comment.Text>
+                  <MessageDetect message={message} />
                   <Comment.Actions>
                     <Comment.Action>Reply</Comment.Action>
                   </Comment.Actions>

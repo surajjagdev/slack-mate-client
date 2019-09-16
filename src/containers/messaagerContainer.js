@@ -10,6 +10,8 @@ const messagesQuery = gql`
       user {
         username
       }
+      url
+      filetype
       createdAt
     }
   }
@@ -30,6 +32,7 @@ const MessageContainer = props => {
         if (loading) {
           return <span>Loading ...</span>;
         }
+        console.log(data);
 
         return (
           <MessageContainerClass

@@ -59,6 +59,7 @@ const DirectMessages = ({
     return <Redirect to="/createteam" />;
   }
   const username = getUser.username;
+  const currentUserId = getUser.id;
   if (!teamsList.length) {
     return <Redirect to="/createteam" />;
   }
@@ -78,6 +79,7 @@ const DirectMessages = ({
           name: t.name.charAt(0).toUpperCase()
         }))}
         team={team}
+        currentUserId={currentUserId}
         userName={username}
       />
       <Header channelName={getMessagedUser.username} />

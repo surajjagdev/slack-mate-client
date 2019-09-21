@@ -66,12 +66,14 @@ export default class Sidebar extends React.Component {
         open={this.state.openDirectMessageModal}
         teamId={parseInt(team.id, 10)}
         onClose={this.handleAddDirectMessage}
+        currentUserId={this.props.currentUserId}
       />,
       <AddChannelModal
         key="addchannelmodal-sidebar"
         open={this.state.openAddChannelModal}
         teamId={parseInt(team.id, 10)}
         close={this.handleAddChannel}
+        currentUserId={this.props.currentUserId}
       />,
       <InviteMateModal
         key="invitematemodal-sidebar"

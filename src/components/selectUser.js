@@ -7,7 +7,8 @@ const SelectUsers = ({
   data: { loading, getTeamMembers },
   value,
   handleChange,
-  placeholder
+  placeholder,
+  currentUserId
 }) =>
   loading ? null : (
     <Dropdown
@@ -18,11 +19,13 @@ const SelectUsers = ({
       multiple
       search
       selection
-      options={getTeamMembers.map(tm => ({
-        key: tm.id,
-        value: tm.id,
-        text: tm.username
-      }))}
+      options={getTeamMembers
+        .filter(tm => tm.id !== currentUserId)
+        .map(tm => ({
+          key: tm.id,
+          value: tm.id,
+          text: tm.username
+        }))}
     />
   );
 export default graphql(getTeamMembersQuery, {

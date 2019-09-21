@@ -38,6 +38,16 @@ export default class Sidebar extends React.Component {
   render() {
     const { teams, team, userName } = this.props;
     let isOwner = false;
+    const regularChannels = [];
+    const dmChannels = [];
+    team.channels.forEach(c => {
+      if (c.directmessage) {
+        dmChannels.push(c);
+      } else {
+        regularChannels.push(c);
+      }
+    });
+    console.log('reg: ', regularChannels, '\n', 'dmChannels: ', dmChannels);
     try {
       if (team.admin === true) {
         isOwner = true;
@@ -54,8 +64,8 @@ export default class Sidebar extends React.Component {
         userName={userName}
         isOwner={isOwner}
         teamId={team.id}
-        channels={team.channels}
-        users={team.directMessageMembers}
+        channels={regularChannels}
+        dmChannels={dmChannels}
         addChannel={this.handleAddChannel}
         handleInviteMate={this.handleInviteMate}
         directMessageClick={this.handleAddDirectMessage}

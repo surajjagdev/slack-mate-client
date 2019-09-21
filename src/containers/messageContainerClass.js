@@ -32,6 +32,14 @@ const MessageDetect = ({ message: { url, text, filetype } }) => {
           </audio>
         </div>
       );
+    } else if (filetype.startsWith('video/')) {
+      return (
+        <div>
+          <video style={{ maxWidth: '320px', maxHeight: '240px' }} controls>
+            <source src={url} type={filetype} />
+          </video>
+        </div>
+      );
     }
   }
   return <Comment.Text>{text}</Comment.Text>;

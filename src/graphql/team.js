@@ -15,6 +15,7 @@ export const getUserQuery = gql`
         channels {
           id
           name
+          directmessage
         }
       }
     }

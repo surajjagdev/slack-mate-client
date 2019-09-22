@@ -4,7 +4,9 @@ import { graphql } from 'react-apollo';
 import { flowRight } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { withFormik } from 'formik';
+import { getUserQuery } from '../graphql/team.js';
 import gql from 'graphql-tag';
+import findIndex from 'lodash/findIndex';
 import SelectUsers from './selectUser.js';
 
 const DirectMessageModal = ({
@@ -53,7 +55,10 @@ const DirectMessageModal = ({
 );
 const getOrCreateChannelMutation = gql`
   mutation($teamId: Int!, $members: [String!]!) {
-    getOrCreateChannel(teamId: $teamId, members: $members)
+    getOrCreateChannel(teamId: $teamId, members: $members) {
+      id
+      name
+    }
   }
 `;
 export default flowRight(
@@ -63,12 +68,34 @@ export default flowRight(
     mapPropsToValues: () => ({ members: [] }),
     handleSubmit: async (
       { members },
-      { props: { onClose, teamId, mutate }, setSubmitting }
+      { props: { history, onClose, teamId, mutate }, resetForm, setSubmitting }
     ) => {
-      const response = await mutate({ variables: { members, teamId } });
+      const response = await mutate({
+        variables: { members, teamId },
+        update: (store, { data: { getOrCreateChannel } }) => {
+          const { id, name } = getOrCreateChannel;
+
+          const data = store.readQuery({ query: getUserQuery });
+          const teamIdx = findIndex(data.getUser.teams, ['id', teamId]);
+          const notInChannelList = data.getUser.teams[teamIdx].channels.every(
+            c => c.id !== id
+          );
+
+          if (notInChannelList) {
+            data.getUser.teams[teamIdx].channels.push({
+              __typename: 'Channel',
+              id,
+              name,
+              directmessage: true
+            });
+            store.writeQuery({ query: getUserQuery, data });
+          }
+          // history.push(`/view-team/${teamId}/${id}`);
+        }
+      });
       console.log(response);
       onClose();
-      setSubmitting(false);
+      resetForm();
     }
   })
 )(DirectMessageModal);

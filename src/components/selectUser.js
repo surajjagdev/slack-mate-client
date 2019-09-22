@@ -4,7 +4,7 @@ import { getTeamMembersQuery } from '../graphql/team.js';
 import { Dropdown } from 'semantic-ui-react';
 
 const SelectUsers = ({
-  data: { loading, getTeamMembers },
+  data: { loading, getTeamMembers = [] },
   value,
   handleChange,
   placeholder,

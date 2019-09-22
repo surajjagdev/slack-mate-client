@@ -54,7 +54,7 @@ const channel = ({ id, name }, teamId) => {
 
 const dmChannel = ({ id, name }, teamId) => (
   <SideBarListItem key={`user-${id}`}>
-    <Link to={`/viewteam/user/${teamId}/${id}`}>
+    <Link to={`/viewteam/${teamId}/${id}`}>
       <OnlineBubble /> {name}
     </Link>
   </SideBarListItem>

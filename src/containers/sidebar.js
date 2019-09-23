@@ -74,7 +74,6 @@ export default class Sidebar extends React.Component {
         key="adddirectmessagemodal-sidebar"
         teamId={parseInt(team.id, 10)}
         open={this.state.openDirectMessageModal}
-        teamId={parseInt(team.id, 10)}
         onClose={this.handleAddDirectMessage}
         currentUserId={this.props.currentUserId}
       />,

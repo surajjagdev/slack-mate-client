@@ -90,7 +90,7 @@ export default flowRight(
             });
             store.writeQuery({ query: getUserQuery, data });
           }
-          // history.push(`/view-team/${teamId}/${id}`);
+          history.push(`/viewteam/${teamId}/${id}`);
         }
       });
       console.log(response);

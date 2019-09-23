@@ -44,7 +44,7 @@ const AddChannelModal = ({
         <Form.Field>
           <Checkbox
             label="Make Channel Private"
-            value={!values.public}
+            checked={!values.public}
             onChange={(e, { checked }) => setFieldValue('public', !checked)}
             toggle
           />

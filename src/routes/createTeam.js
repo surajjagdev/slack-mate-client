@@ -3,7 +3,6 @@ import { extendObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
-import { Mutation } from 'react-apollo';
 import {
   Message,
   Form,

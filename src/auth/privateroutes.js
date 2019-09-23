@@ -1,7 +1,6 @@
 import React from 'react';
 import isAuthenticated from './auth.js';
 import { Route, Redirect } from 'react-router-dom';
-const isAuth = true;
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   return (
     <Route

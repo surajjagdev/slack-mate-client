@@ -103,6 +103,7 @@ const createChannelMutation = gql`
       channel {
         id
         name
+        directmessage
       }
       errors {
         path
@@ -134,7 +135,8 @@ export default flowRight(
             channel: {
               __typename: 'Channel',
               id: -1,
-              name: values.name
+              name: values.name,
+              directmessage: false
             }
           }
         },

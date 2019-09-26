@@ -20,6 +20,7 @@ const ViewTeam = ({
   if (loading || !getUser) {
     return null;
   }
+  console.log('getUser', getUser);
   let teamsList = null;
   try {
     if (typeof getUser !== undefined) {

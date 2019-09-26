@@ -104,6 +104,7 @@ const createChannelMutation = gql`
         id
         name
         directmessage
+        createdAt
       }
       errors {
         path

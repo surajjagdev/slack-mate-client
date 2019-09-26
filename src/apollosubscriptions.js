@@ -18,6 +18,7 @@ const middlewareLink = setContext(() => ({
     refreshtoken: localStorage.getItem('refreshToken') || null
   }
 }));
+
 const afterWareLink = new ApolloLink((operation, forward) => {
   return forward(operation).map(response => {
     const context = operation.getContext();

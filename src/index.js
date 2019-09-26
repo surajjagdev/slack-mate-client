@@ -5,7 +5,6 @@ import { ApolloProvider } from 'react-apollo';
 import client from './apollosubscriptions.js';
 import 'semantic-ui-css/semantic.min.css';
 import * as serviceWorker from './serviceWorker';
-
 ReactDOM.render(
   <ApolloProvider client={client}>
     <App />

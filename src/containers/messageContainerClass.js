@@ -1,9 +1,9 @@
 import React from 'react';
-import Messages from '../components/messages.js';
 import gql from 'graphql-tag';
-import { Comment } from 'semantic-ui-react';
+import { Comment, Button } from 'semantic-ui-react';
 import FileUpload from '../components/fileupload.js';
 import RenderText from '../components/rendertext.js';
+import _ from 'underscore';
 const newChannelMessageSubscription = gql`
   subscription($channelId: Int!) {
     newChannelMessage(channelId: $channelId) {
@@ -15,6 +15,7 @@ const newChannelMessageSubscription = gql`
       url
       filetype
       createdAt
+      created_at
     }
   }
 `;
@@ -76,8 +77,8 @@ class MessageContainerClass extends React.Component {
           return {
             ...prev,
             messages: [
-              ...prev.messages,
-              subscriptionData.data.newChannelMessage
+              subscriptionData.data.newChannelMessage,
+              ...prev.messages
             ]
           };
         }
@@ -85,36 +86,59 @@ class MessageContainerClass extends React.Component {
       }
     });
   };
-
-  /*componentDidUpdate(prevProps) {
-    if (prevProps.channelId !== this.props.channelId) {
-      this.subscribe(this.props.channelId);
+  handleScroll = () => {
+    console.log('has more items: ', this.props.hasMoreItems);
+    if (
+      this.scroller &&
+      this.scroller.scrollTop < 100 &&
+      this.props.hasMoreItems &&
+      this.props.messages.length >= 35
+    ) {
+      //console.log('has more items: ', this.props.hasMoreItems);
+      return this.props.onLoadMore();
     }
-  }*/
+  };
   render() {
     return (
-      <Messages>
+      <div
+        style={{
+          gridColumn: 3,
+          gridRow: 2,
+          paddingLeft: '20px',
+          paddingRight: '20px',
+          display: 'flex',
+          flexDirection: 'column-reverse',
+          overflowY: 'auto'
+        }}
+        onScroll={_.throttle(this.handleScroll, 1000)}
+        ref={scroller => {
+          this.scroller = scroller;
+        }}
+      >
         <FileUpload channelId={this.props.channelId} disableClick={true}>
           <Comment.Group>
-            {this.props.messages.map(message => (
-              <Comment key={`message-${message.id}`}>
-                <Comment.Content>
-                  <Comment.Author as="a">
-                    {message.user.username}
-                  </Comment.Author>
-                  <Comment.Metadata>
-                    <div>{message.createdAt}</div>
-                  </Comment.Metadata>
-                  <MessageDetect message={message} />
-                  <Comment.Actions>
-                    <Comment.Action>Reply</Comment.Action>
-                  </Comment.Actions>
-                </Comment.Content>
-              </Comment>
-            ))}
+            {this.props.messages
+              .slice()
+              .reverse()
+              .map(message => (
+                <Comment key={`message-${message.id}`}>
+                  <Comment.Content>
+                    <Comment.Author as="a">
+                      {message.user.username}
+                    </Comment.Author>
+                    <Comment.Metadata>
+                      <div>{message.createdAt}</div>
+                    </Comment.Metadata>
+                    <MessageDetect message={message} />
+                    <Comment.Actions>
+                      <Comment.Action>Reply</Comment.Action>
+                    </Comment.Actions>
+                  </Comment.Content>
+                </Comment>
+              ))}
           </Comment.Group>
         </FileUpload>
-      </Messages>
+      </div>
     );
   }
 }

@@ -3,8 +3,8 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import MessageContainerClass from './messageContainerClass.js';
 const messagesQuery = gql`
-  query($channelId: Int!) {
-    messages(channelId: $channelId) {
+  query($cursor: String, $channelId: Int!) {
+    messages(cursor: $cursor, channelId: $channelId) {
       id
       text
       user {
@@ -13,36 +13,68 @@ const messagesQuery = gql`
       url
       filetype
       createdAt
+      created_at
     }
   }
 `;
-const MessageContainer = props => {
-  console.log(props);
-  return (
-    <Query
-      query={messagesQuery}
-      variables={{ channelId: props.channelId }}
-      fetchPolicy="network-only"
-    >
-      {({ data, loading, subscribeToMore }) => {
-        if (!data) {
-          return null;
-        }
+class MessageContainer extends React.Component {
+  state = { hasMoreItems: true };
+  render() {
+    return (
+      <Query
+        query={messagesQuery}
+        variables={{ channelId: this.props.channelId }}
+        fetchPolicy="network-only"
+      >
+        {({ data, loading, subscribeToMore, fetchMore }) => {
+          if (!data) {
+            return null;
+          }
 
-        if (loading) {
-          return <span>Loading ...</span>;
-        }
-        console.log(data);
+          if (loading) {
+            return <span>Loading ...</span>;
+          }
+          console.log('data: ', data);
 
-        return (
-          <MessageContainerClass
-            messages={data.messages}
-            subscribeToMore={subscribeToMore}
-            channelId={props.channelId}
-          />
-        );
-      }}
-    </Query>
-  );
-};
+          return (
+            <MessageContainerClass
+              messages={data.messages}
+              subscribeToMore={subscribeToMore}
+              channelId={this.props.channelId}
+              hasMoreItems={this.state.hasMoreItems}
+              onLoadMore={() => {
+                if (this.state.hasMoreItems) {
+                  fetchMore({
+                    variables: {
+                      channelId: this.props.channelId,
+                      cursor: data.messages[data.messages.length - 1].createdAt
+                    },
+                    updateQuery: (prev, { fetchMoreResult }) => {
+                      if (!fetchMoreResult) {
+                        return prev;
+                      }
+                      if (fetchMoreResult.messages.length < 35) {
+                        this.setState({ hasMoreItems: false });
+                        let newFilteredFetchMoreArray = fetchMoreResult.messages.slice(
+                          1
+                        );
+                        return {
+                          ...prev,
+                          messages: [
+                            ...prev.messages,
+                            ...newFilteredFetchMoreArray
+                          ]
+                        };
+                      }
+                    }
+                  });
+                }
+              }}
+            />
+          );
+        }}
+      </Query>
+    );
+  }
+}
 export default MessageContainer;

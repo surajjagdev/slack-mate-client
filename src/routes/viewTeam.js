@@ -20,7 +20,6 @@ const ViewTeam = ({
   if (loading || !getUser) {
     return null;
   }
-  console.log('getUser', getUser);
   let teamsList = null;
   try {
     if (typeof getUser !== undefined) {
@@ -40,7 +39,6 @@ const ViewTeam = ({
   const teamIdx = teamIdInteger
     ? findIndex(teamsList, ['id', teamIdInteger])
     : 0;
-  console.log('teamIdx:', teamIdx);
   const team = teamIdx === -1 ? teamsList[0] : teamsList[teamIdx];
   const channelIdInteger = parseInt(channelId, 10);
   const channelIdx = channelIdInteger
@@ -66,7 +64,6 @@ const ViewTeam = ({
           channelId={channel.id}
           placeholder={channel.name}
           onSubmit={async text => {
-            console.log('text: ', text);
             await mutate({ variables: { text, channelId: channel.id } });
           }}
         />

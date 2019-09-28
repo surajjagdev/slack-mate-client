@@ -25,7 +25,6 @@ const afterWareLink = new ApolloLink((operation, forward) => {
     const {
       response: { headers }
     } = context;
-    console.log(headers);
     if (headers) {
       const token = headers.get('token');
       console.log(token);

@@ -38,7 +38,6 @@ const team = ({ id, name }) => {
   );
 };
 export default ({ teams }) => {
-  console.log(teams);
   return (
     <TeamWrapper>
       <TeamList>

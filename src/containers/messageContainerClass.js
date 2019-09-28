@@ -46,7 +46,9 @@ const MessageDetect = ({ message: { url, text, filetype } }) => {
   return <Comment.Text>{text}</Comment.Text>;
 };
 class MessageContainerClass extends React.Component {
+  state = { test: true, hasMoreItems: true };
   componentDidMount() {
+    this.props.intializeHasMoreItems();
     this.subscribe(this.props.channelId);
   }
   componentDidUpdate(prevProps) {
@@ -87,18 +89,18 @@ class MessageContainerClass extends React.Component {
     });
   };
   handleScroll = () => {
-    console.log('has more items: ', this.props.hasMoreItems);
+    //console.log('has more items: ', this.props.hasMoreItems);
     if (
       this.scroller &&
-      this.scroller.scrollTop < 100 &&
+      this.scroller.scrollTop < 25 &&
       this.props.hasMoreItems &&
       this.props.messages.length >= 35
     ) {
-      //console.log('has more items: ', this.props.hasMoreItems);
       return this.props.onLoadMore();
     }
   };
   render() {
+    console.log('test: ', this.state.test);
     return (
       <div
         style={{

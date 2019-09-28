@@ -19,7 +19,13 @@ const messagesQuery = gql`
 `;
 class MessageContainer extends React.Component {
   state = { hasMoreItems: true };
+  intializeHasMoreItems = () => {
+    this.setState({ hasMoreItems: true }, () => {
+      console.log('intialized has more items, ', this.state.hasMoreItems);
+    });
+  };
   render() {
+    console.log('this.state.hasMoreItems: ', this.state.hasMoreItems);
     return (
       <Query
         query={messagesQuery}
@@ -42,6 +48,7 @@ class MessageContainer extends React.Component {
               subscribeToMore={subscribeToMore}
               channelId={this.props.channelId}
               hasMoreItems={this.state.hasMoreItems}
+              intializeHasMoreItems={this.intializeHasMoreItems}
               onLoadMore={() => {
                 if (this.state.hasMoreItems) {
                   fetchMore({

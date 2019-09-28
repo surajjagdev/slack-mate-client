@@ -47,7 +47,6 @@ export default class Sidebar extends React.Component {
         regularChannels.push(c);
       }
     });
-    console.log('reg: ', regularChannels, '\n', 'dmChannels: ', dmChannels);
     try {
       if (team.admin === true) {
         isOwner = true;

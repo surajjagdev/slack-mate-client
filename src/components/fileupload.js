@@ -6,14 +6,12 @@ import { graphql } from 'react-apollo';
 const FileUpload = ({ children, disableClick, mutate, channelId }) => (
   <Dropzone
     onDrop={async ([file]) => {
-      console.log(file);
-      const response = await mutate({
+      await mutate({
         variables: {
           channelId,
           file: file
         }
       });
-      console.log('response: ', response);
     }}
   >
     {({ getRootProps, getInputProps }) => (

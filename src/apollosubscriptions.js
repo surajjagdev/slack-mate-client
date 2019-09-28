@@ -27,8 +27,6 @@ const afterWareLink = new ApolloLink((operation, forward) => {
     } = context;
     if (headers) {
       const token = headers.get('token');
-      console.log(token);
-
       const refreshToken = headers.get('refreshtoken');
       if (token) {
         localStorage.setItem('token', token);
@@ -41,11 +39,6 @@ const afterWareLink = new ApolloLink((operation, forward) => {
     return response;
   });
 });
-/*const logoutLink = onError(({ networkError }) => {
-  if (networkError.statusCode === 401) {
-    console.log('netwrok erro');
-  }
-});*/
 const httpLinkWithMiddleware = afterWareLink.concat(
   middlewareLink.concat(httpLink)
 );

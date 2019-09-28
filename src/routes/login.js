@@ -40,7 +40,6 @@ export default observer(
     postFormLogin = data => {
       const response = data.login;
       let { email, password } = this;
-      console.log(data);
       if (response.ok === true) {
         this.errors = {};
         email = '';

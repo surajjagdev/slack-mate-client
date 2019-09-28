@@ -1,6 +1,6 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { Comment, Button } from 'semantic-ui-react';
+import { Comment } from 'semantic-ui-react';
 import FileUpload from '../components/fileupload.js';
 import RenderText from '../components/rendertext.js';
 import _ from 'underscore';
@@ -46,7 +46,6 @@ const MessageDetect = ({ message: { url, text, filetype } }) => {
   return <Comment.Text>{text}</Comment.Text>;
 };
 class MessageContainerClass extends React.Component {
-  state = { test: true, hasMoreItems: true };
   componentDidMount() {
     this.props.intializeHasMoreItems();
     this.subscribe(this.props.channelId);
@@ -89,7 +88,6 @@ class MessageContainerClass extends React.Component {
     });
   };
   handleScroll = () => {
-    //console.log('has more items: ', this.props.hasMoreItems);
     if (
       this.scroller &&
       this.scroller.scrollTop < 25 &&
@@ -100,7 +98,6 @@ class MessageContainerClass extends React.Component {
     }
   };
   render() {
-    console.log('test: ', this.state.test);
     return (
       <div
         style={{

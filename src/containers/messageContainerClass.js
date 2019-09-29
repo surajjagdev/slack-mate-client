@@ -119,8 +119,8 @@ class MessageContainerClass extends React.Component {
             {this.props.messages
               .slice()
               .reverse()
-              .map(message => (
-                <Comment key={`message-${message.id}`}>
+              .map((message, index) => (
+                <Comment key={`message-${message.id}-index-${index}`}>
                   <Comment.Content>
                     <Comment.Author as="a">
                       {message.user.username}
